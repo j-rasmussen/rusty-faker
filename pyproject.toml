@@ -1,0 +1,32 @@
+[build-system]
+requires = ["maturin>=1.9.4,<2"]
+build-backend = "maturin"
+
+[project]
+name = "rusty-faker"
+version = "0.1.0"
+description = "A Rust-backed drop-in replacement for the Faker library"
+readme = "CLAUDE.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE-faker"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Rust",
+    "Topic :: Software Development :: Testing",
+]
+
+[project.entry-points.pytest11]
+rusty_faker = "rusty_faker.contrib.pytest.plugin"
+
+[project.optional-dependencies]
+dev = ["Faker==40.39.0", "pytest>=8"]
+
+[tool.maturin]
+manifest-path = "crates/rusty-faker-py/Cargo.toml"
+module-name = "rusty_faker._core"
+python-source = "python"
+profile = "release"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

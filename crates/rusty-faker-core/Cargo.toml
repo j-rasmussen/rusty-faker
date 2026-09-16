@@ -1,0 +1,22 @@
+[package]
+name = "rusty-faker-core"
+description = "Fake data generation engine with Python Faker's data compiled in"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+build = "build.rs"
+
+[dependencies]
+chrono.workspace = true
+deunicode.workspace = true
+rand.workspace = true
+rand_pcg.workspace = true
+thiserror.workspace = true
+unicode-normalization.workspace = true
+
+[build-dependencies]
+serde_json.workspace = true
+
+[lints]
+workspace = true

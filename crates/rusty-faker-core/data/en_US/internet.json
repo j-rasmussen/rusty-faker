@@ -1,0 +1,216 @@
+{
+ "attributes": {
+  "email_formats": {
+   "items": [
+    "{{user_name}}@{{domain_name}}",
+    "{{user_name}}@{{free_email_domain}}"
+   ],
+   "type": "str_list"
+  },
+  "free_email_domains": {
+   "items": [
+    "gmail.com",
+    "yahoo.com",
+    "hotmail.com"
+   ],
+   "type": "str_list"
+  },
+  "hostname_prefixes": {
+   "items": [
+    "db",
+    "srv",
+    "desktop",
+    "laptop",
+    "lt",
+    "email",
+    "web"
+   ],
+   "type": "str_list"
+  },
+  "http_assigned_codes": {
+   "items": [
+    100,
+    101,
+    102,
+    103,
+    200,
+    201,
+    202,
+    203,
+    204,
+    205,
+    206,
+    207,
+    208,
+    226,
+    300,
+    301,
+    302,
+    303,
+    304,
+    305,
+    307,
+    308,
+    400,
+    401,
+    402,
+    403,
+    404,
+    405,
+    406,
+    407,
+    408,
+    409,
+    410,
+    411,
+    412,
+    413,
+    414,
+    415,
+    416,
+    417,
+    421,
+    422,
+    423,
+    424,
+    425,
+    426,
+    428,
+    429,
+    431,
+    451,
+    500,
+    501,
+    502,
+    503,
+    504,
+    505,
+    506,
+    507,
+    508,
+    510,
+    511
+   ],
+   "type": "int_list"
+  },
+  "http_methods": {
+   "items": [
+    "GET",
+    "HEAD",
+    "POST",
+    "PUT",
+    "DELETE",
+    "CONNECT",
+    "OPTIONS",
+    "TRACE",
+    "PATCH"
+   ],
+   "type": "str_list"
+  },
+  "image_placeholder_services": {
+   "items": [
+    "https://picsum.photos/{width}/{height}",
+    "https://dummyimage.com/{width}x{height}",
+    "https://placekittens.com/{width}/{height}"
+   ],
+   "type": "str_list"
+  },
+  "replacements": {
+   "items": [],
+   "type": "str_list"
+  },
+  "safe_domain_names": {
+   "items": [
+    "example.org",
+    "example.com",
+    "example.net"
+   ],
+   "type": "str_list"
+  },
+  "tlds": {
+   "items": [
+    "com",
+    "com",
+    "com",
+    "com",
+    "com",
+    "com",
+    "biz",
+    "info",
+    "net",
+    "org"
+   ],
+   "type": "str_list"
+  },
+  "uri_extensions": {
+   "items": [
+    ".html",
+    ".html",
+    ".html",
+    ".htm",
+    ".htm",
+    ".php",
+    ".php",
+    ".jsp",
+    ".asp"
+   ],
+   "type": "str_list"
+  },
+  "uri_pages": {
+   "items": [
+    "index",
+    "home",
+    "search",
+    "main",
+    "post",
+    "homepage",
+    "category",
+    "register",
+    "login",
+    "faq",
+    "about",
+    "terms",
+    "privacy",
+    "author"
+   ],
+   "type": "str_list"
+  },
+  "uri_paths": {
+   "items": [
+    "app",
+    "main",
+    "wp-content",
+    "search",
+    "category",
+    "tag",
+    "categories",
+    "tags",
+    "blog",
+    "posts",
+    "list",
+    "explore"
+   ],
+   "type": "str_list"
+  },
+  "url_formats": {
+   "items": [
+    "www.{{domain_name}}/",
+    "{{domain_name}}/"
+   ],
+   "type": "str_list"
+  },
+  "user_name_formats": {
+   "items": [
+    "{{last_name}}.{{first_name}}",
+    "{{first_name}}.{{last_name}}",
+    "{{first_name}}##",
+    "?{{last_name}}"
+   ],
+   "type": "str_list"
+  }
+ },
+ "faker_version": "40.39.0",
+ "locale": "en_US",
+ "provider": "internet",
+ "provider_module": "faker.providers.internet.en_US"
+}
