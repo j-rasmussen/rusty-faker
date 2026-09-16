@@ -71,12 +71,12 @@ Calls per second, Faker 40.39.0 vs rusty-faker 0.1.0, 20,000 calls each on an M2
 
 | formatter                | Faker   | rusty-faker | speedup |
 | ------------------------ | ------: | ----------: | ------: |
-| company                  |  12,645 |   5,185,153 |    410x |
-| name                     |  17,774 |   5,588,868 |    314x |
-| email                    |  18,402 |   2,712,891 |    147x |
-| sentence                 | 191,611 |   4,328,614 |     23x |
-| date_time                | 499,164 |   3,314,642 |    6.6x |
-| date_time_this_year (tz) | 323,855 |     566,997 |    1.8x |
+| company                  |  12,958 |   5,624,626 |    434x |
+| name                     |  18,280 |   5,478,826 |    300x |
+| email                    |  18,968 |   2,749,645 |    145x |
+| sentence                 | 202,292 |   4,501,759 |     22x |
+| date_time                | 523,732 |   5,588,609 |     11x |
+| date_time_this_year (tz) | 331,611 |     788,184 |    2.4x |
 
 Template-heavy string formatters gain the most. The floor is the timezone-aware date
 methods, which still call into CPython for zone-dependent boundaries. One machine, one
