@@ -5,6 +5,11 @@ version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
+authors.workspace = true
+repository.workspace = true
+# Embeds Faker-derived data and its API is shaped entirely around the PyO3 layer;
+# publishing it is a separate decision. See NOTICE.
+publish = false
 build = "build.rs"
 
 [dependencies]

@@ -6,6 +6,9 @@ Every public, non-callable data attribute of each supported provider is dumped
 ``crates/rusty-faker-core/data/<locale>/<provider>.json``. ``build.rs`` in the
 core crate turns these files into static Rust tables.
 
+The output is derived from Faker's data tables and inherits Faker's MIT license;
+see NOTICE.
+
 Usage:
     .venv/bin/python tools/extract_faker_data.py [--locale en_US ...] [--out DIR]
 """

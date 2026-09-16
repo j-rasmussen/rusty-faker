@@ -2,17 +2,20 @@
 
 Custom providers subclass ``BaseProvider``; its random helpers draw from the generator's
 Rust RNG, so seeding a ``Faker`` also makes custom providers repeatable.
+
+MIT, Copyright (c) 2012 Daniele Faraglia; see NOTICE.
 """
 
 from __future__ import annotations
 
 import string
+from collections import OrderedDict
 from typing import Any, Collection, List, Optional, Sequence, TypeVar, Union
 
 from rusty_faker.generator import Generator
 
 T = TypeVar("T")
-ElementsType = Union[Collection[T], "OrderedDict[T, float]"]  # noqa: F821
+ElementsType = Union[Collection[T], OrderedDict[T, float]]
 
 
 def _core(provider: "BaseProvider") -> Any:

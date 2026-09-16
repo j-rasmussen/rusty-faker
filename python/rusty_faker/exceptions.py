@@ -1,4 +1,7 @@
-"""Exceptions, mirroring ``faker.exceptions``."""
+"""Exceptions, mirroring ``faker.exceptions``.
+
+MIT, Copyright (c) 2012 Daniele Faraglia; see NOTICE.
+"""
 
 from rusty_faker._core import ParseError
 

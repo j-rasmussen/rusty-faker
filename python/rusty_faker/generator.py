@@ -2,6 +2,8 @@
 
 Mirrors ``faker.generator.Generator``. Resolved bound methods are cached on the instance
 (and on single-locale ``Faker`` proxies) so repeat calls skip Python-level dispatch.
+
+MIT, Copyright (c) 2012 Daniele Faraglia; see NOTICE.
 """
 
 from __future__ import annotations

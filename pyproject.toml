@@ -4,23 +4,46 @@ build-backend = "maturin"
 
 [project]
 name = "rusty-faker"
-version = "0.1.0"
 description = "A Rust-backed drop-in replacement for the Faker library"
-readme = "CLAUDE.md"
+readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
-license-files = ["LICENSE-faker"]
+license-files = ["LICENSE", "LICENSE-faker", "NOTICE"]
+authors = [{ name = "John Rasmussen", email = "89487088+j-rasmussen@users.noreply.github.com" }]
+keywords = ["faker", "fake", "fake-data", "test-data", "fixtures", "mock", "rust", "pyo3"]
+# Read from crates/rusty-faker-py/Cargo.toml by maturin; see python/rusty_faker/__init__.py.
+dynamic = ["version"]
 classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: Pytest",
+    "Intended Audience :: Developers",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Rust",
     "Topic :: Software Development :: Testing",
+    "Typing :: Typed",
 ]
+
+[project.urls]
+Homepage = "https://github.com/j-rasmussen/rusty-faker"
+Repository = "https://github.com/j-rasmussen/rusty-faker"
+Issues = "https://github.com/j-rasmussen/rusty-faker/issues"
+Changelog = "https://github.com/j-rasmussen/rusty-faker/blob/main/CHANGELOG.md"
+Benchmarks = "https://github.com/j-rasmussen/rusty-faker/blob/main/benchmarks.md"
 
 [project.entry-points.pytest11]
 rusty_faker = "rusty_faker.contrib.pytest.plugin"
 
 [project.optional-dependencies]
-dev = ["Faker==40.39.0", "pytest>=8"]
+dev = ["Faker==40.39.0", "pytest>=8", "maturin>=1.9.4,<2"]
 
 [tool.maturin]
 manifest-path = "crates/rusty-faker-py/Cargo.toml"
@@ -31,3 +54,5 @@ features = ["pyo3/extension-module", "pyo3/abi3-py310"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# The real Faker's plugin registers a `faker` fixture that shadows ours.
+addopts = "-p no:faker"

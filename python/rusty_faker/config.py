@@ -1,4 +1,7 @@
-"""Configuration constants, mirroring ``faker.config``."""
+"""Configuration constants, mirroring ``faker.config``.
+
+MIT, Copyright (c) 2012 Daniele Faraglia; see NOTICE.
+"""
 
 from rusty_faker._core import LOCALES
 

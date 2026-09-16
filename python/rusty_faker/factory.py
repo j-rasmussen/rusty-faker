@@ -1,4 +1,7 @@
-"""Factory, mirroring ``faker.factory.Factory``."""
+"""Factory, mirroring ``faker.factory.Factory``.
+
+MIT, Copyright (c) 2012 Daniele Faraglia; see NOTICE.
+"""
 
 from __future__ import annotations
 

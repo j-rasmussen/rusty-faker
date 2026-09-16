@@ -1,0 +1,28 @@
+rusty-faker
+Copyright (c) 2026 John Rasmussen
+Licensed under the MIT License (see LICENSE).
+
+This project contains code and data derived from Faker
+(https://github.com/joke2k/faker), Copyright (c) 2012 Daniele Faraglia and
+individual contributors, licensed under the MIT License (see LICENSE-faker).
+
+Derived data
+  crates/rusty-faker-core/data/**/*.json
+  Extracted from Faker 40.39.0 by tools/extract_faker_data.py and compiled into
+  static Rust tables by crates/rusty-faker-core/build.rs. These files ship inside
+  every wheel.
+
+Derived code
+  python/rusty_faker/proxy.py                  (from faker.proxy)
+  python/rusty_faker/generator.py              (from faker.generator)
+  python/rusty_faker/factory.py                (from faker.factory)
+  python/rusty_faker/config.py                 (from faker.config)
+  python/rusty_faker/exceptions.py             (from faker.exceptions)
+  python/rusty_faker/providers/__init__.py     (from faker.providers)
+  python/rusty_faker/contrib/pytest/plugin.py  (from faker.contrib.pytest.plugin)
+  python/rusty_faker/_tz.py                    (from faker.providers.date_time)
+
+  crates/rusty-faker-core/src/providers/*.rs and crates/rusty-faker-py/src/lib.rs
+  reimplement Faker's provider algorithms and public API in Rust.
+
+rusty-faker is not affiliated with, endorsed by, or a fork of the Faker project.

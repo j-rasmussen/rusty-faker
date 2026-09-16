@@ -1,4 +1,7 @@
-"""pytest plugin providing the ``faker`` fixture, mirroring ``faker.contrib.pytest.plugin``."""
+"""pytest plugin providing the ``faker`` fixture, mirroring ``faker.contrib.pytest.plugin``.
+
+MIT, Copyright (c) 2012 Daniele Faraglia; see NOTICE.
+"""
 
 import pytest
 

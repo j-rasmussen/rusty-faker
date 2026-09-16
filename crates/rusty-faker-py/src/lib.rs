@@ -1672,6 +1672,9 @@ mod _core {
     fn init(m: &Bound<'_, PyModule>) -> PyResult<()> {
         m.add("ParseError", m.py().get_type::<ParseError>())?;
         m.add("LOCALES", rusty_faker_core::LOCALE_CODES.to_vec())?;
+        // The one version number: `[workspace.package] version` in Cargo.toml, which
+        // maturin also writes into the wheel metadata.
+        m.add("__version__", env!("CARGO_PKG_VERSION"))?;
         Ok(())
     }
 }

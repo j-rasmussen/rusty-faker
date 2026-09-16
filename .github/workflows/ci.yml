@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  rust:
+    name: rust
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.10"
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all --check
+      # extension-module lives in [tool.maturin], so this links against libpython and
+      # runs normally. abi3 is there too, which means clippy does NOT catch limited-API
+      # regressions — the wheel build in `python` below is what does.
+      - run: cargo clippy --all-targets --all-features -- -D warnings
+        env:
+          PYO3_PYTHON: ${{ env.pythonLocation }}/bin/python
+      - run: cargo test --workspace --locked
+
+  python:
+    name: py${{ matrix.python-version }} ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # abi3 means one wheel serves every version, so test the ends of the range.
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.10", "3.14"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.os }}
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Create venv
+        shell: bash
+        run: |
+          uv venv .venv --python ${{ matrix.python-version }}
+          uv pip install --python .venv "maturin>=1.9.4,<2" "pytest>=8" "Faker==40.39.0"
+
+      # Build and install the wheel rather than `maturin develop`: it is the artifact
+      # users get, and it avoids VIRTUAL_ENV juggling on Windows.
+      - name: Build wheel
+        shell: bash
+        run: uv run --python .venv maturin build --release --out dist
+
+      - name: Wheel must be abi3
+        shell: bash
+        run: ls dist/*.whl | grep -q -- '-abi3-' || { ls dist; exit 1; }
+
+      - name: Install wheel
+        shell: bash
+        run: uv pip install --python .venv --no-index --find-links dist rusty-faker
+
+      - name: Import the built extension
+        shell: bash
+        run: uv run --python .venv python -c "import rusty_faker; print(rusty_faker.__version__, rusty_faker.Faker().name())"
+
+      - name: Tests
+        shell: bash
+        run: uv run --python .venv pytest -q
+
+      - name: Stubs must be current
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.14'
+        shell: bash
+        run: uv run --python .venv python tools/generate_stubs.py --check
+
+  audit:
+    name: cargo audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: rustsec/audit-check@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
