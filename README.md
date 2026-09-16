@@ -71,18 +71,24 @@ Calls per second, Faker 40.39.0 vs rusty-faker 0.1.0, 20,000 calls each on an M2
 
 | formatter                | Faker   | rusty-faker | speedup |
 | ------------------------ | ------: | ----------: | ------: |
-| company                  |  12,768 |   5,419,443 |    424x |
-| name                     |  18,033 |   5,403,094 |    300x |
-| email                    |  18,617 |   2,600,907 |    140x |
-| sentence                 | 194,849 |   4,170,396 |     21x |
-| date_time                | 513,286 |   5,712,926 |     11x |
-| date_time_this_year (tz) | 330,031 |     785,853 |    2.4x |
+| company                  |  12,645 |   5,185,153 |    410x |
+| name                     |  17,774 |   5,588,868 |    314x |
+| email                    |  18,402 |   2,712,891 |    147x |
+| sentence                 | 191,611 |   4,328,614 |     23x |
+| date_time                | 499,164 |   3,314,642 |    6.6x |
+| date_time_this_year (tz) | 323,855 |     566,997 |    1.8x |
 
-Template-heavy string formatters gain the most. The floor is the timezone-aware date
-methods, which still call into CPython for zone-dependent boundaries. One machine, one
-run — see [benchmarks.md](benchmarks.md) for the full table and how to reproduce it.
+Template-heavy string formatters gain the most. The floor is the date and time methods:
+they call into CPython to build each value, and the abi3 wheels pay extra for that
+because the limited API has no datetime C-API macros. One machine, one run — see
+[benchmarks.md](benchmarks.md) for the full table, the abi3 cost broken out, and how to
+reproduce it.
 
 ## Building from source
+
+On macOS 26/27 a locally built extension may fail to import with `mis-aligned LINKEDIT
+string pool` — an Apple linker bug that does not affect the published wheels. See
+[CONTRIBUTING.md](CONTRIBUTING.md#known-issue-the-extension-will-not-load-on-macos-2627).
 
 ```bash
 git clone https://github.com/j-rasmussen/rusty-faker && cd rusty-faker

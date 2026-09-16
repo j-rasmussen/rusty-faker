@@ -25,6 +25,45 @@ cargo audit
 plugin; without it, its `faker` fixture shadows ours and the compat tests fail
 confusingly.
 
+## Known issue: the extension will not load on macOS 26/27
+
+On macOS 26 and 27 with Xcode's `ld-27037.1`, a locally built extension may build fine
+and then fail to import:
+
+```
+ImportError: dlopen(.../rusty_faker/_core.abi3.so): (mis-aligned LINKEDIT string pool, fileOffset=0x...)
+```
+
+The linker places the symbol string table directly after the indirect symbol table
+without padding, so when the indirect symbol count is odd the string pool lands
+4-byte-aligned and dyld requires 8:
+
+```
+stroff = indirectsymoff + nindirectsyms * 4      # 1680024 + 313 * 4 = 1681276, mod 8 == 4
+```
+
+Check a build with `otool -l <file>.so | grep -A4 LC_SYMTAB`. It is an Apple linker bug,
+not a project one: the same source built by GitHub's runners pads correctly, with
+identical symbol counts, and those wheels import on an affected machine. Build flags do
+not help — the indirect symbol count comes from the binary's import set, so LTO, `strip`,
+`opt-level`, `-ld_classic` and the deployment target all leave it unchanged. The Command
+Line Tools ship the same linker version, so `DEVELOPER_DIR` does not help either.
+
+Until Apple fixes it, get a working local install from CI instead of building:
+
+```bash
+gh run download --name wheels-macos-aarch64 --dir /tmp/rf-wheels   # from a Release run
+uv pip install --python .venv --no-index --find-links /tmp/rf-wheels --reinstall rusty-faker
+```
+
+That is enough to run the test suite and the benchmarks against a released build; it just
+will not include local Rust changes, which have to go through CI to be tested.
+
+**Watch for stale artifacts.** If both `_core.abi3.so` and an older
+`_core.cpython-3XX-darwin.so` are present in `python/rusty_faker/`, Python loads the
+latter, so a "passing" local run can be testing a binary from before your change. Delete
+both before rebuilding.
+
 ## Things worth knowing
 
 - **The data is generated.** Never hand-edit `crates/rusty-faker-core/data/**/*.json`;
