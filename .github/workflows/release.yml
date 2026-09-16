@@ -119,8 +119,10 @@ jobs:
         run: |
           python -m pip install --only-binary :all: --no-index --find-links dist rusty-faker
           python -c "import rusty_faker; print(rusty_faker.__version__); print(rusty_faker.Faker().name())"
-          python -m pip install "pytest>=8"
-          python -m pytest tests/compat/test_behavior.py -q
+          # The compat conftest imports the real Faker, so the whole suite needs it;
+          # addopts = "-p no:faker" keeps its pytest plugin out of the way.
+          python -m pip install "pytest>=8" "Faker==40.39.0"
+          python -m pytest tests -q
 
   verify-sdist:
     name: verify sdist builds from source
