@@ -10,8 +10,7 @@ use pyo3::exceptions::{
 use pyo3::prelude::*;
 use pyo3::sync::PyOnceLock;
 use pyo3::types::{
-    PyDate, PyDateAccess, PyDateTime, PyDelta, PyDict, PyList, PySequence, PyString, PyTuple,
-    PyTzInfo,
+    PyDate, PyDateTime, PyDelta, PyDict, PyList, PySequence, PyString, PyTuple, PyTzInfo,
 };
 use rusty_faker_core::{Clock, DateTimeValue, Error, Generator, timestamp_to_naive};
 
@@ -167,6 +166,16 @@ fn now_in_tz<'py>(py: Python<'py>, tz: &Bound<'py, PyTzInfo>) -> PyResult<Bound<
     Ok(datetime_class(py)?
         .call_method1("now", (tz,))?
         .cast_into::<PyDateTime>()?)
+}
+
+/// The calendar date of an aware datetime, read through attribute access: the `PyDateAccess`
+/// accessors read the struct fields directly and are unavailable under the limited API.
+fn ymd_of(dt: &Bound<'_, PyDateTime>) -> PyResult<(i32, u8, u8)> {
+    Ok((
+        dt.getattr("year")?.extract()?,
+        dt.getattr("month")?.extract()?,
+        dt.getattr("day")?.extract()?,
+    ))
 }
 
 /// `timegm(dt.astimezone(utc).timetuple())` for an aware datetime.
@@ -1373,12 +1382,9 @@ impl PyGenerator {
             // Only "today" depends on the zone; the result is a plain date either way.
             Some(tz) => {
                 let now = now_in_tz(py, &tz)?;
-                let today = NaiveDate::from_ymd_opt(
-                    now.get_year(),
-                    now.get_month().into(),
-                    now.get_day().into(),
-                )
-                .ok_or_else(|| PyOverflowError::new_err("date value out of range"))?;
+                let (year, month, day) = ymd_of(&now)?;
+                let today = NaiveDate::from_ymd_opt(year, month.into(), day.into())
+                    .ok_or_else(|| PyOverflowError::new_err("date value out of range"))?;
                 slf.borrow_mut()
                     .inner
                     .date_of_birth_from(today, minimum_age, maximum_age)
@@ -1471,7 +1477,8 @@ fn this_period<'py>(
     if !before_now && !after_now {
         return Ok(now.into_any());
     }
-    let (start, end) = period.bounds(now.get_year(), now.get_month());
+    let (year, month, _) = ymd_of(&now)?;
+    let (start, end) = period.bounds(year, month);
     let boundary = |(y, m, d): (i32, u8, u8)| -> PyResult<i64> {
         floor_timestamp_of(&PyDateTime::new(py, y, m, d, 0, 0, 0, 0, Some(&tz))?)
     };
