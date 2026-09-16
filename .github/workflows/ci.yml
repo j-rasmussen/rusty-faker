@@ -32,8 +32,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: cargo fmt --all --check
       # extension-module lives in [tool.maturin], so this links against libpython and
-      # runs normally. abi3 is there too, which means clippy does NOT catch limited-API
-      # regressions — the wheel build in `python` below is what does.
+      # runs normally.
       - run: cargo clippy --all-targets --all-features -- -D warnings
         env:
           PYO3_PYTHON: ${{ env.pythonLocation }}/bin/python
@@ -45,9 +44,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # abi3 means one wheel serves every version, so test the ends of the range.
+        # One wheel per version, so every supported version needs a build. Linux covers
+        # the whole range; macOS and Windows cover the ends.
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.10", "3.14"]
+        include:
+          - { os: ubuntu-latest, python-version: "3.11" }
+          - { os: ubuntu-latest, python-version: "3.12" }
+          - { os: ubuntu-latest, python-version: "3.13" }
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
@@ -70,9 +74,12 @@ jobs:
         shell: bash
         run: uv run --python .venv maturin build --release --out dist
 
-      - name: Wheel must be abi3
+      # Guards against abi3 being switched back on without the matrix being widened.
+      - name: Wheel must be version-specific
         shell: bash
-        run: ls dist/*.whl | grep -q -- '-abi3-' || { ls dist; exit 1; }
+        run: |
+          tag=cp$(echo "${{ matrix.python-version }}" | tr -d .)
+          ls dist/*.whl | grep -q -- "-$tag-$tag" || { ls dist; exit 1; }
 
       - name: Install wheel
         shell: bash

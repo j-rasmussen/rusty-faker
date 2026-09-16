@@ -49,17 +49,21 @@ yours to do.
 2. Move the `Unreleased` section of `CHANGELOG.md` down to the new version.
 3. Re-run the benchmarks if anything performance-relevant changed, and update
    `benchmarks.md` (it records the versions it measured).
-4. Commit, then tag and push:
+4. If a new CPython version has been released, add it to the matrices in
+   `.github/workflows/release.yml` and `ci.yml` and to the classifiers in
+   `pyproject.toml`. Wheels are per-version, so a new CPython needs a new release.
+5. Commit, then tag and push:
 
    ```bash
    git tag -a v0.1.0 -m "v0.1.0"
    git push origin main v0.1.0
    ```
 
-5. The tag starts `release.yml`: five abi3 wheels plus an sdist, then verification jobs
-   that install each wheel and run the full compat suite, and build the sdist from
-   source. Only after all of those pass does `publish` wait for your approval.
-6. Approve the deployment. Check <https://pypi.org/p/rusty-faker>, then install from a
+6. The tag starts `release.yml`: a wheel per CPython version per platform (3.10 to 3.14
+   on Linux x86_64/aarch64, macOS arm64/x86_64 and Windows x64) plus an sdist, then
+   verification jobs that install each wheel and run the full compat suite, and build the
+   sdist from source. Only after all of those pass does `publish` wait for your approval.
+7. Approve the deployment. Check <https://pypi.org/p/rusty-faker>, then install from a
    clean environment to confirm:
 
    ```bash

@@ -50,7 +50,9 @@ manifest-path = "crates/rusty-faker-py/Cargo.toml"
 module-name = "rusty_faker._core"
 python-source = "python"
 profile = "release"
-features = ["pyo3/extension-module", "pyo3/abi3-py310"]
+# Not abi3: the limited API has no datetime C-API macros, which costs 40-50% on the
+# datetime formatters. One wheel per Python version instead — see benchmarks.md.
+features = ["pyo3/extension-module"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

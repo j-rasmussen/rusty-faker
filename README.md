@@ -46,9 +46,9 @@ uv add rusty-faker
 ```
 
 Wheels are published for Linux x86_64/aarch64 (manylinux), macOS arm64/x86_64 and
-Windows x86_64. They are abi3 wheels — one per platform, covering CPython 3.10 and every
-later version. Other platforms, and free-threaded builds (3.13t/3.14t, which abi3 does
-not cover), compile from the sdist and need a Rust toolchain (1.85+).
+Windows x86_64, one per CPython version from 3.10 to 3.14. Other platforms, and CPython
+versions newer than the latest release, compile from the sdist and need a Rust toolchain
+(1.85+).
 
 ## What v1 covers
 
@@ -78,11 +78,9 @@ Calls per second, Faker 40.39.0 vs rusty-faker 0.1.0, 20,000 calls each on an M2
 | date_time                | 499,164 |   3,314,642 |    6.6x |
 | date_time_this_year (tz) | 323,855 |     566,997 |    1.8x |
 
-Template-heavy string formatters gain the most. The floor is the date and time methods:
-they call into CPython to build each value, and the abi3 wheels pay extra for that
-because the limited API has no datetime C-API macros. One machine, one run — see
-[benchmarks.md](benchmarks.md) for the full table, the abi3 cost broken out, and how to
-reproduce it.
+Template-heavy string formatters gain the most. The floor is the timezone-aware date
+methods, which still call into CPython for zone-dependent boundaries. One machine, one
+run — see [benchmarks.md](benchmarks.md) for the full table and how to reproduce it.
 
 ## Building from source
 

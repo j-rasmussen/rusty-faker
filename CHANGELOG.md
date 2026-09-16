@@ -19,10 +19,10 @@ First release.
   `fake["locale"]`, `unique`, `optional`, `seed`/`seed_instance`, `add_provider`,
   custom `BaseProvider` subclasses, `DynamicProvider`, copy and pickle.
 - A pytest plugin exposing the `faker` fixture, mirroring Faker's.
-- abi3 wheels: one per platform, covering CPython 3.10 and later. This costs roughly
-  40-50% of the throughput of the datetime formatters, which the limited API forces
-  through the Python-level `datetime` constructor; string formatters are unaffected.
-  See benchmarks.md.
+- Wheels for CPython 3.10 to 3.14 on Linux x86_64/aarch64, macOS arm64/x86_64 and
+  Windows x64, plus an sdist. Not abi3: it was measured and cost 40-50% on the datetime
+  formatters, which the limited API forces through the Python-level `datetime`
+  constructor. See benchmarks.md.
 - `py.typed`, a generated `proxy.pyi` and a hand-written `_core.pyi`.
 
 ### Known limitations

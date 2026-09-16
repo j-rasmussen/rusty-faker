@@ -31,7 +31,7 @@ On macOS 26 and 27 with Xcode's `ld-27037.1`, a locally built extension may buil
 and then fail to import:
 
 ```
-ImportError: dlopen(.../rusty_faker/_core.abi3.so): (mis-aligned LINKEDIT string pool, fileOffset=0x...)
+ImportError: dlopen(.../rusty_faker/_core.cpython-314-darwin.so): (mis-aligned LINKEDIT string pool, fileOffset=0x...)
 ```
 
 The linker places the symbol string table directly after the indirect symbol table
@@ -59,19 +59,21 @@ uv pip install --python .venv --no-index --find-links /tmp/rf-wheels --reinstall
 That is enough to run the test suite and the benchmarks against a released build; it just
 will not include local Rust changes, which have to go through CI to be tested.
 
-**Watch for stale artifacts.** If both `_core.abi3.so` and an older
-`_core.cpython-3XX-darwin.so` are present in `python/rusty_faker/`, Python loads the
-latter, so a "passing" local run can be testing a binary from before your change. Delete
-both before rebuilding.
+**Watch for stale artifacts.** If more than one `_core.*.so` is present in
+`python/rusty_faker/` — say one left over from a differently configured build — Python
+may load the wrong one, so a "passing" local run can be testing a binary from before your
+change. Delete them all before rebuilding.
 
 ## Things worth knowing
 
 - **The data is generated.** Never hand-edit `crates/rusty-faker-core/data/**/*.json`;
   re-run `tools/extract_faker_data.py` against the pinned Faker. See
   `crates/rusty-faker-core/data/README.md`.
-- **The extension builds against CPython's limited API** (`pyo3/abi3-py310`, set in
-  `[tool.maturin] features`). `PyDateAccess`, `PyTimeAccess` and `PyDeltaAccess` are
-  unavailable there — read date and time components with `getattr`, as `ymd_of` does.
+- **Wheels are built per CPython version, not abi3.** abi3 was measured and rejected: the
+  limited API has no datetime C-API macros, so it cost 40-50% on the datetime formatters
+  (see `benchmarks.md`). The consequence is that every new CPython release needs a new
+  rusty-faker release, and the matrices in `.github/workflows/` are the list of supported
+  versions.
 - **`pyo3/extension-module` lives in `[tool.maturin]`, not `Cargo.toml`**, so that
   `cargo test` and `cargo clippy` still link against libpython and run.
 - **The version lives in `Cargo.toml`** (`[workspace.package] version`) and reaches
